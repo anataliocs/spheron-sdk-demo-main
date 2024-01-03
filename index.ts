@@ -14,8 +14,10 @@ module.exports = (async function () {
     const spheronClientConfiguration: SpheronClientConfiguration = {token: process.env.SPHERON_TOKEN};
     const client = new SpheronClient(spheronClientConfiguration);
 
-    //Set this to get deployment info
-    const deploymentId: string = '6594e076f7cb6100125d955c';
+    /*
+        Set these constants to get deployment info for your instance
+     */
+    const deploymentId: string = '6594d2fff7cb6100125d918d';
     const instanceId = '6594ba2cfcc39d0012b55895';
 
     const org = await client.organization.get();

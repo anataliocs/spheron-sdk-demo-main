@@ -14,7 +14,18 @@ Install deps:
 npm install
 ```
 
-Run:    
+### Run Instance and Deployment Debugging tool    
+
+Open index.ts and update `instanceId` and/or `deploymentId`:
+```
+    /*
+        Set these constants to get deployment info for your instance
+     */
+    const deploymentId: string = '6594d2fff7cb6100125d918d';
+    const instanceId = '6594ba2cfcc39d0012b55895';
+```
+
+Then run the script to pull detailed data about your instance and deployment:
 ```
 npx ts-node index.ts
 ```
