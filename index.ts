@@ -12,17 +12,17 @@ declare var process: {
 module.exports = (async function () {
 
     const spheronClientConfiguration: SpheronClientConfiguration = {token: process.env.SPHERON_TOKEN};
-    const client = new SpheronClient(spheronClientConfiguration);
+    const client: SpheronClient = new SpheronClient(spheronClientConfiguration);
 
     /*
         Set these constants to get deployment info for your instance
      */
-    const deploymentId: string = '6594d2fff7cb6100125d918d';
-    const instanceId = '6594ba2cfcc39d0012b55895';
+    const deploymentId: string = '65954649fcc39d0012b5a735';
+    const instanceId: string = '659545e0f7cb6100125dcb88';
 
-    const org = await client.organization.get();
-    console.log("Org id: " + org.id);
-    console.log("Org name: " + org.profile.name);
+    const org: Organization = await client.organization.get();
+    console.log("Org ID: " + org.id);
+    console.log("Org Name: " + org.profile.name);
 
     console.log("\nClusters\n");
     const clusters = await client.organization.getClusters({
@@ -31,7 +31,7 @@ module.exports = (async function () {
     });
 
     clusters.forEach(cluster => {
-        console.log("Cluster id: " + cluster.id);
+        console.log("Cluster ID: " + cluster.id);
         console.log("Cluster URL: " + cluster.url);
     });
 
@@ -48,9 +48,15 @@ module.exports = (async function () {
     if (deploymentId.length > 0) {
         const instanceDeployment = await client.instance.getInstanceDeployment(deploymentId);
 
-        console.log("Cluster URL: " + instanceDeployment.connectionUrls);
+        instanceDeployment.connectionUrls.forEach((url:string, index:number) => {
+            console.log(`Cluster ${index} URL: ` + url + "\n");
+        });
+
         console.log("Instance id: " + instanceDeployment.id);
-        console.log("Config commands: " + instanceDeployment.instanceConfiguration.commands);
+
+        instanceDeployment.instanceConfiguration.commands.forEach((cmd:string, index:number) => {
+            console.log(`Config command ${index}: ` + cmd + "\n");
+        });
 
         instanceDeployment.instanceConfiguration.environmentVariables
             .forEach(envVar => {
