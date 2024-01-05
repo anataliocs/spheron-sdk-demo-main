@@ -7,9 +7,20 @@ declare var process: {
     env: {
         SPHERON_TOKEN: string
     }
+    argv: string[]
 };
 
 module.exports = (async function () {
+
+    if(!process.argv[2]) {
+        console.error(`You must provide an Instance ID as a parameter \n`);
+        console.error(`Example: ts-node index.ts 65977ef77b81be0012eb5afc \n`);
+        return;
+    }
+    if(!process.argv[3]) {
+        console.error(`Deployment ID not provided \n`);
+    }
+
 
     const spheronClientConfiguration: SpheronClientConfiguration = {token: process.env.SPHERON_TOKEN};
     const client: SpheronClient = new SpheronClient(spheronClientConfiguration);
@@ -17,8 +28,9 @@ module.exports = (async function () {
     /*
         Set these constants to get deployment info for your instance
      */
-    const deploymentId: string = '65954649fcc39d0012b5a735';
-    const instanceId: string = '659545e0f7cb6100125dcb88';
+    const deploymentId: string = process.argv[3];
+    const instanceId: string = process.argv[2];
+    console.log("Instance ID: " + instanceId);
 
     const org: Organization = await client.organization.get();
     console.log("Org ID: " + org.id);
@@ -45,16 +57,16 @@ module.exports = (async function () {
     });
 
     console.log("\nDeployment Config\n");
-    if (deploymentId.length > 0) {
+    if (process.argv[3]) {
         const instanceDeployment = await client.instance.getInstanceDeployment(deploymentId);
 
-        instanceDeployment.connectionUrls.forEach((url:string, index:number) => {
+        instanceDeployment.connectionUrls.forEach((url: string, index: number) => {
             console.log(`Cluster ${index} URL: ` + url + "\n");
         });
 
         console.log("Instance id: " + instanceDeployment.id);
 
-        instanceDeployment.instanceConfiguration.commands.forEach((cmd:string, index:number) => {
+        instanceDeployment.instanceConfiguration.commands.forEach((cmd: string, index: number) => {
             console.log(`Config command ${index}: ` + cmd + "\n");
         });
 
@@ -64,21 +76,22 @@ module.exports = (async function () {
             });
 
         console.log("Status: " + instanceDeployment.status);
+
+
+        console.log("\nLogs\n");
+        const instanceLogs: Array<string> = await client.instance.getInstanceLogs(
+            deploymentId,
+            {
+                from: 0,
+                to: 1000,
+                logType: InstanceLogType.INSTANCE_LOGS,
+            });
+
+        await client.instance.triggerLatestLog(instanceId);
+
+        instanceLogs.forEach(log => {
+            console.log("Logs: " + log.toString());
+        })
     }
-
-    console.log("\nLogs\n");
-    const instanceLogs: Array<string> = await client.instance.getInstanceLogs(
-        deploymentId,
-        {
-            from: 0,
-            to: 1000,
-            logType: InstanceLogType.INSTANCE_LOGS,
-        });
-
-    await client.instance.triggerLatestLog(instanceId);
-
-    instanceLogs.forEach(log => {
-        console.log("Logs: " + log.toString());
-    })
 
 })();
