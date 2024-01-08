@@ -16,7 +16,9 @@ npm install
 
 ### Run Instance and Deployment Debugging tool
 
-Then run the script to pull detailed data about your instance and deployment:
+Then run the script to pull detailed data about your instance and deployment.
+
+Parameters:
 - INSTANCE_ID (required)
 - DEPLOYMENT_ID (optional)
 
@@ -28,3 +30,7 @@ npx ts-node index.ts INSTANCE_ID DEPLOYMENT_ID
 
 - [Spheron Docs](https://docs.spheron.network/)
 - [Spheron Discourse](https://community.spheron.network/latest)
+
+## Contact
+
+chris@spheron.network
